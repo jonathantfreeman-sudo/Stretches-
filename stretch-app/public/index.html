@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Stretch" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="manifest" href="manifest.json" />
+  <title>Stretch Plan</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --card: #21253a;
+      --accent: #6c63ff;
+      --accent2: #a78bfa;
+      --text: #e8eaf6;
+      --muted: #8b8fa8;
+      --morning: #f59e0b;
+      --bed: #818cf8;
+      --border: rgba(255,255,255,0.07);
+      --safe-top: env(safe-area-inset-top);
+      --safe-bottom: env(safe-area-inset-bottom);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: calc(var(--safe-top) + 14px) 20px 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      color: var(--accent2);
+    }
+
+    header span {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* Day nav */
+    .day-nav {
+      background: var(--surface);
+      padding: 12px 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .day-nav::-webkit-scrollbar { display: none; }
+
+    .day-tabs {
+      display: flex;
+      gap: 8px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .day-tab {
+      flex-shrink: 0;
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .day-tab:hover { color: var(--text); border-color: var(--accent); }
+    .day-tab.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .day-tab.today-tab { border-color: var(--accent2); color: var(--accent2); }
+    .day-tab.today-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+    /* Content */
+    main {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px 16px calc(var(--safe-bottom) + 20px);
+    }
+
+    .day-header {
+      margin-bottom: 20px;
+    }
+    .day-header h2 {
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
+    .day-header .today-badge {
+      display: inline-block;
+      margin-top: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      background: rgba(167,139,250,0.12);
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin: 24px 0 10px;
+    }
+    .section-label.morning { color: var(--morning); }
+    .section-label.bed { color: var(--bed); }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .exercise-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .exercise-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .exercise-detail {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .exercise-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .exercise-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+      color: var(--accent2);
+      text-decoration: none;
+      background: rgba(167,139,250,0.1);
+      border: 1px solid rgba(167,139,250,0.2);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 500;
+      transition: background 0.15s;
+    }
+    .exercise-link:active { background: rgba(167,139,250,0.25); }
+
+    /* Simple day (Saturday, Sunday) */
+    .simple-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 10px;
+    }
+    .simple-card .exercise-name { margin-bottom: 8px; }
+
+    .check-box {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .check-box.checked {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .check-box.checked::after {
+      content: '✓';
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .exercise-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .exercise-info { flex: 1; }
+
+    .progress-bar-wrap {
+      margin-top: 6px;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    .progress-label {
+      text-align: right;
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>💪 Stretch Plan</h1>
+    <span id="dateLabel"></span>
+  </div>
+</header>
+
+<nav class="day-nav">
+  <div class="day-tabs" id="dayTabs"></div>
+</nav>
+
+<main id="main"></main>
+
+<script>
+const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+const DATA = {
+  Monday: {
+    morning: [
+      {
+        name: 'Weighted Butterfly',
+        detail: '10 flaps each leg, then 12 reps both legs together',
+        links: [{ label: 'Watch', url: 'https://www.betterbodyacademy.com/flexiblity-mobility/weighted-butterflyetch' }]
+      },
+      {
+        name: 'Kneeling Quad Stretch with Yoga Ball Raise',
+        detail: '8–10 reps',
+        links: [
+          { label: 'Quad stretch', url: 'https://www.youtube.com/watch?v=dGQ0zsV4mTc' },
+          { label: 'Raise', url: 'https://youtube.com/shorts/6cEiyajQ1V0?feature=share' }
+        ]
+      },
+      {
+        name: 'Side Lying Core Rotation',
+        detail: '10 total',
+        links: [{ label: 'Watch', url: 'https://youtu.be/EHZJns1bXPM' }]
+      },
+      {
+        name: 'Rhomboid Stretch',
+        detail: '20–40 sec hold',
+        links: [{ label: 'Watch', url: 'https://youtu.be/B8v_J5I9K20' }]
+      },
+      {
+        name: 'Hamstring Floss — Standing',
+        detail: '20 each side',
+        links: [{ label: 'Watch', url: 'https://youtu.be/LLd8ojz2-o4?si=gSQFE8-4XxUQUs78' }]
+      },
+      {
+        name: 'Hamstring Floss — Lying',
+        detail: '20 each side',
+        links: [{ label: 'Watch', url: 'https://youtu.be/1umMhiYpamY?si=AyhXkhlg7ezbGVkL' }]
+      },
+    ],
+    bed: [
+      {
+        name: 'Towel Scrunch',
+        detail: '5 each foot',
+        links: [{ label: 'Watch', url: 'https://www.youtube.com/watch?v=XEJYq1HBtHY' }]
+      },
+      {
+        name: 'Shoulder CAR',
+        detail: '8 each side',
+        links: [{ label: 'Watch', url: 'https://youtu.be/ghXn2-ZYfU4' }]
+      },
+      {
+        name: 'Pigeon Stretch',
+        detail: '30 sec – 1 min hold',
+        links: [{ label: 'Watch', url: 'https://youtu.be/op-eDU9eNqM?si=aO-UuIm6N0TcfQqN' }]
+      },
+    ]
+  },
+  Tuesday: {
+    morning: [
+      {
+        name: 'Upper Trap Stretch',
+        detail: '20–40 sec each side',
+        links: [{ label: 'Watch', url: 'https://youtu.be/-r0eoFS7_5Q' }]
+      },
+      {
+        name: 'Straddle Stretch',
+        detail: '30 sec – 1 min hold',
+        links: [{ label: 'Watch', url: 'https://youtu.be/r15VoakKG-E' }]
+      },
+      {
+        name: 'Quad Extension',
+        detail: '10–12 reps',
+        links: [{ label: 'Watch', url: 'https://www.youtube.com/watch?v=1ofnMbEFUoQ' }]
+      },
+      {
+        name: 'Tibia Pulls',
+        detail: '10 reps',
+        links: [{ label: 'Watch', url: 'https://youtu.be/MslHL6pCROA' }]
+      },
+      {
+        name: 'Hamstring Floss — Standing',
+        detail: '20 each side',
+        links: [{ label: 'Watch', url: 'https://youtu.be/LLd8ojz2-o4?si=gSQFE8-4XxUQUs78' }]
+      },
+      {
+        name: 'Hamstring Floss — Lying',
+        detail: '20 each side',
+        links: [{ label: 'Watch', url: 'https://youtu.be/1umMhiYpamY?si=AyhXkhlg7ezbGVkL' }]
+      },
+    ],
+    bed: [
+      {
+        name: 'Lacrosse Ball / Baseball Foot Roll',
+        detail: 'Multi-direction',
+        links: [{ label: 'Watch', url: 'https://youtube.com/shorts/7e84b0lp8r4?si=rzulhQSs6lp2xciZ' }]
+      },
+      {
+        name: 'Towel Scrunch',
+        detail: '5 each foot',
+        links: [{ label: 'Watch', url: 'https://www.youtube.com/watch?v=XEJYq1HBtHY' }]
+      },
+      {
+        name: 'Swimmer Stretch',
+        detail: '8 reps (chest and shoulder)',
+        links: [{ label: 'Watch', url: 'https://youtu.be/amyCM7-VwXI' }]
+      },
+      {
+        name: "Child's Pose to Cobra",
+        detail: '10 reps',
+        links: [{ label: 'Watch', url: 'https://www.youtube.com/watch?v=4xPXuE0z19Y' }]
+      },
+    ]
+  },
+  Wednesday: {
+    morning: [
+      {
+        name: 'Wrist Stretch Sit Back',
+        detail: '10 reps, hold 10–15 seconds each',
+        links: [{ label: 'Watch', url: 'https://youtu.be/QiMiia4F7Xg?si=uDD-ICUlmZOdGbFx' }]
+      },
+      {
+        name: 'Hamstring Flutter / Kick',
+        detail: '12 reps (feet on couch if no yoga ball)',
+        links: [{ label: 'Watch', url: 'https://youtube.com/shorts/_pW-OKhiCMc?feature=share' }]
+      },
+      {
+        name: 'Side Bend',
+        detail: '10 reps',
+        links: [{ label: 'Watch', url: 'https://youtube.com/shorts/0o-NYBKaog0?feature=share' }]
+      },
+      {
+        name: 'Rhomboid Banded Stretch',
+        detail: '20–40 sec hold',
+        links: [{ label: 'Watch', url: 'https://youtube.com/shorts/l28GhMF_a54?feature=share' }]
+      },
+      {
+        name: 'Adductor Slider',
+        detail: '10 each side with 10 second pause',
+        links: [{ label: 'Watch', url: 'https://youtube.com/shorts/dq0QwzHI7Is?si=Kjkzg8AlBJxgSArl' }]
+      },
+    ],
+    bed: [
+      {
+        name: '5-Minute Foot Health Yoga',
+        detail: 'Full video',
+        links: [{ label: 'Watch', url: 'https://youtu.be/7Dgz4Dm5jlo?si=ySFxQvLCtgVnOu-X' }]
+      },
+      {
+        name: 'Hamstring Wall Hold',
+        detail: '45 sec – 1 min',
+        links: [{ label: 'Watch', url: 'https://youtube.com/shorts/8ggkgq220bA?si=ITMUNJeG-8LZwNzu' }]
+      },
+      {
+        name: 'Happy Baby Pose',
+        detail: '30 sec – 1 min',
+        links: [{ label: 'Watch', url: 'https://youtu.be/Ppku7i3ypGM' }]
+      },
+      {
+        name: 'Deep Squat Hold',
+        detail: '15–30 sec — lean side to side, keep heels down, repeat twice',
+        links: [{ label: 'Watch', url: 'https://youtube.com/shorts/JVRXzb4qOx0?feature=share' }]
+      },
+      {
+        name: 'Calf Raise with Hold',
+        detail: '15 sec hold — roll heel to toes',
+        links: [{ label: 'Watch', url: 'https://www.youtube.com/shorts/RHJIiWflo_s' }]
+      },
+    ]
+  },
+  Thursday: {
+    morning: [
+      {
+        name: 'Foot Mobility',
+        detail: 'Short video routine',
+        links: [{ label: 'Watch', url: 'https://www.youtube.com/watch?v=aSJ2AU1_VP4' }]
+      },
+      {
+        name: 'Weighted Butterfly',
+        detail: '10 flaps',
+        links: [{ label: 'Watch', url: 'https://www.betterbodyacademy.com/flexiblity-mobility/weighted-butterfly' }]
+      },
+      {
+        name: 'Pec Stretch',
+        detail: '15–30 sec each side',
+        links: [{ label: 'Watch', url: 'https://youtu.be/tatrv67rou8' }]
+      },
+      {
+        name: 'Swimmers',
+        detail: '10 reps',
+        links: [{ label: 'Watch', url: 'https://youtu.be/OanaBbIZDQI' }]
+      },
+      {
+        name: 'Wrist Stretch',
+        detail: '10 reps, 15 sec hold each',
+        links: [{ label: 'Watch', url: 'https://youtube.com/shorts/fCpKoKBR_9g?si=irIB_FYo21iQFGDE' }]
+      },
+    ],
+    bed: [
+      {
+        name: 'Upper Trap Stretch',
+        detail: '10 each side',
+        links: [{ label: 'Watch', url: 'https://youtube.com/shorts/Yfujb9psUMs?si=IN7faJQECNPdSb0Q' }]
+      },
+      {
+        name: 'Adductor Rock Back',
+        detail: '10 each side',
+        links: [{ label: 'Watch', url: 'https://youtu.be/yF8o6I6aSZg' }]
+      },
+      {
+        name: "Child's Pose Walk Over",
+        detail: '10 alternating (left to right)',
+        links: [{ label: 'Watch', url: 'https://youtu.be/fs5mYLk7ZFI' }]
+      },
+      {
+        name: 'Quad Stretch',
+        detail: 'Choose your level',
+        links: [
+          { label: 'Harder', url: 'https://www.youtube.com/shorts/LIozEO44AU8' },
+          { label: 'Easier', url: 'https://www.youtube.com/watch?v=_xU-wIiMxpI' }
+        ]
+      },
+    ]
+  },
+  Friday: {
+    morning: [
+      {
+        name: 'Weighted Straddle Stretch',
+        detail: '10 reps (use a pillow behind you if needed)',
+        links: [{ label: 'Watch', url: 'https://youtube.com/shorts/UQPeBxOOTaM?feature=share' }]
+      },
+      {
+        name: 'Trap Stretch',
+        detail: '10 each side, 15 sec hold',
+        links: [{ label: 'Watch', url: 'https://youtube.com/shorts/uNM9bQi2LW4?si=F622WjAPVXGRj-E8' }]
+      },
+      {
+        name: 'Dead Bug Press',
+        detail: '15–30 sec',
+        links: [{ label: 'Watch', url: 'https://youtu.be/FzJsMijpcxc' }]
+      },
+      {
+        name: 'Thread the Needle',
+        detail: '8 each side',
+        links: [{ label: 'Watch', url: 'https://youtu.be/MfUx9FCOb1E' }]
+      },
+      {
+        name: 'Hamstring Floss — Lying',
+        detail: '20 each side',
+        links: [{ label: 'Watch', url: 'https://youtu.be/1umMhiYpamY?si=AyhXkhlg7ezbGVkL' }]
+      },
+    ],
+    bed: [
+      {
+        name: 'Lunge with Calf Raise',
+        detail: '8 each leg — find balance first, then move into raise',
+        links: [{ label: 'Watch', url: 'https://youtu.be/jKYxg1tKPRk' }]
+      },
+      {
+        name: 'Bridge',
+        detail: '8–10 reps — 3 sec down, squeeze glutes when they touch the ground, shoot back up',
+        links: [{ label: 'Watch', url: 'https://youtube.com/shorts/Rq3EXYus03E?si=Ku6w_LEzFM40cM2r' }]
+      },
+      {
+        name: 'Shoulder CAR',
+        detail: '8 each side',
+        links: [{ label: 'Watch', url: 'https://youtu.be/ghXn2-ZYfU4' }]
+      },
+    ]
+  },
+  Saturday: {
+    simple: [
+      {
+        name: 'Foot Mobility Video',
+        links: [{ label: 'Watch', url: 'https://youtu.be/ea4MF7IqILA?si=3j7GLmPw9pLeMLmW' }]
+      },
+      {
+        name: 'Chest Stretch Video',
+        links: [{ label: 'Watch', url: 'https://youtu.be/eo5x2Zw9110' }]
+      },
+    ]
+  },
+  Sunday: {
+    simple: [
+      {
+        name: '10-Minute Full Body Stretch',
+        links: [{ label: 'Watch', url: 'https://youtu.be/9xZcnOjLNZ0' }]
+      },
+      {
+        name: '10-Minute Ankle Mobility',
+        links: [{ label: 'Watch', url: 'https://www.youtube.com/watch?v=PdocnI5B54I' }]
+      },
+    ]
+  }
+};
+
+const todayIndex = new Date().getDay(); // 0=Sun
+const todayName = DAYS[todayIndex];
+let currentDay = todayName;
+
+// Checked state per day (persisted in localStorage)
+function checkedKey(day) { return `checked_${day}_${new Date().toDateString()}`; }
+function getChecked(day) {
+  try { return JSON.parse(localStorage.getItem(checkedKey(day)) || '[]'); } catch { return []; }
+}
+function setChecked(day, arr) {
+  try { localStorage.setItem(checkedKey(day), JSON.stringify(arr)); } catch {}
+}
+
+function renderTabs() {
+  const tabs = document.getElementById('dayTabs');
+  tabs.innerHTML = '';
+  DAYS.forEach(d => {
+    const btn = document.createElement('button');
+    btn.className = 'day-tab' + (d === currentDay ? ' active' : '') + (d === todayName ? ' today-tab' : '');
+    btn.textContent = d.slice(0, 3);
+    btn.onclick = () => { currentDay = d; renderTabs(); renderDay(); };
+    tabs.appendChild(btn);
+  });
+  // Scroll active tab into view
+  const active = tabs.querySelector('.active');
+  if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+
+function countExercises(day) {
+  const d = DATA[day];
+  if (!d) return 0;
+  return (d.morning?.length || 0) + (d.bed?.length || 0) + (d.simple?.length || 0);
+}
+
+function renderDay() {
+  const main = document.getElementById('main');
+  const d = DATA[currentDay];
+  const checked = getChecked(currentDay);
+  const total = countExercises(currentDay);
+  const doneCount = checked.length;
+
+  let html = `<div class="day-header">
+    <h2>${currentDay}</h2>
+    ${currentDay === todayName ? '<span class="today-badge">Today</span>' : ''}
+    <div class="progress-bar-wrap" style="margin-top:10px">
+      <div class="progress-bar" style="width:${total ? (doneCount/total*100) : 0}%"></div>
+    </div>
+    <p class="progress-label">${doneCount} / ${total} done</p>
+  </div>`;
+
+  if (!d) { main.innerHTML = html + '<p style="color:var(--muted)">Rest day 🎉</p>'; return; }
+
+  function renderExercise(ex, idx) {
+    const id = `${currentDay}_${idx}`;
+    const isChecked = checked.includes(id);
+    return `<div class="exercise-card">
+      <div class="exercise-row">
+        <div class="check-box${isChecked ? ' checked' : ''}" data-id="${id}" onclick="toggleCheck('${id}')"></div>
+        <div class="exercise-info">
+          <div class="exercise-name">${ex.name}</div>
+          ${ex.detail ? `<div class="exercise-detail">${ex.detail}</div>` : ''}
+          ${ex.links?.length ? `<div class="exercise-links">${ex.links.map(l => `<a class="exercise-link" href="${l.url}" target="_blank" rel="noopener">▶ ${l.label}</a>`).join('')}</div>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  let idx = 0;
+  if (d.morning) {
+    html += `<div class="section-label morning">☀️ Morning</div>`;
+    html += d.morning.map(ex => renderExercise(ex, idx++)).join('');
+  }
+  if (d.bed) {
+    html += `<div class="section-label bed">🌙 Before Bed</div>`;
+    html += d.bed.map(ex => renderExercise(ex, idx++)).join('');
+  }
+  if (d.simple) {
+    html += `<div class="section-label morning">📋 Today's Routine</div>`;
+    html += d.simple.map(ex => renderExercise(ex, idx++)).join('');
+  }
+
+  main.innerHTML = html;
+}
+
+function toggleCheck(id) {
+  let checked = getChecked(currentDay);
+  if (checked.includes(id)) {
+    checked = checked.filter(c => c !== id);
+  } else {
+    checked.push(id);
+  }
+  setChecked(currentDay, checked);
+  renderDay();
+}
+
+// Date label
+const now = new Date();
+document.getElementById('dateLabel').textContent = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+renderTabs();
+renderDay();
+</script>
+</body>
+</html>
