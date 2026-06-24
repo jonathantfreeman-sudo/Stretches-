@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stretch">
+<meta name="theme-color" content="#064e3b">
+<title>Coach B Stretch Plan</title>
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiQ29hY2ggQiBTdHJldGNoIFBsYW4iLCJzaG9ydF9uYW1lIjoiU3RyZXRjaCIsInN0YXJ0X3VybCI6Ii8iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjZjBmZGY0IiwidGhlbWVfY29sb3IiOiIjMDY0ZTNiIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEyOCAxMjgnPjxyZWN0IHdpZHRoPScxMjgnIGhlaWdodD0nMTI4JyByeD0nMjgnIGZpbGw9JyMwNjRlM2InLz48dGV4dCB4PSc2NCcgeT0nODQnIGZvbnQtc2l6ZT0nNjQnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9J3doaXRlJz7wn6eNPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTI4eDEyOCIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'><rect width='128' height='128' rx='28' fill='%23064e3b'/><text x='64' y='84' font-size='64' text-anchor='middle' fill='white'>🧍</text></svg>">
+<style>
+  :root {
+    --bg: #f7faf8; --card: #ffffff; --text: #111827; --text2: #6b7280;
+    --text3: #9ca3af; --border: #e5e7eb; --accent: #0d9488; --accent2: #064e3b;
+    --done-bg: #ecfdf5; --done-border: #86efac;
+  }
+  @media(prefers-color-scheme:dark){
+    :root {
+      --bg: #0f1512; --card: #1a2420; --text: #e5e7eb; --text2: #9ca3af;
+      --text3: #6b7280; --border: #2d3a34; --accent: #2dd4bf; --accent2: #5eead4;
+      --done-bg: #0d2818; --done-border: #166534;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg); color: var(--text);
+    padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
+    min-height: 100dvh; max-width: 500px; margin: 0 auto;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .hdr { text-align: center; padding: 20px 0 4px; }
+  .hdr small { font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent); }
+  .hdr h1 { font-size: 22px; font-weight: 700; color: var(--accent2); margin-top: 2px; }
+
+  .days {
+    display: flex; gap: 3px; margin: 14px 0; border-radius: 14px; padding: 4px;
+    background: color-mix(in srgb, var(--accent) 8%, var(--bg));
+  }
+  .days button {
+    flex: 1; padding: 10px 0; border: none; border-radius: 11px; cursor: pointer;
+    font-size: 13px; font-weight: 500; background: transparent; color: var(--text2);
+    font-family: inherit; position: relative; transition: all 0.15s;
+  }
+  .days button.sel {
+    background: var(--card); color: var(--accent2); font-weight: 700;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .days .dot { width: 5px; height: 5px; border-radius: 3px; background: var(--accent); margin: 3px auto 0; }
+
+  .prog {
+    display: flex; align-items: center; gap: 16px; background: var(--card);
+    border-radius: 16px; padding: 16px 20px; margin-bottom: 20px;
+    border: 1px solid var(--border);
+  }
+  .prog .dn { font-size: 20px; font-weight: 700; color: var(--accent2); }
+  .prog .ct { font-size: 14px; color: var(--text2); margin-top: 2px; }
+  .prog .ok { font-size: 13px; color: var(--accent); font-weight: 600; margin-top: 4px; }
+
+  .sess { margin-bottom: 20px; }
+  .sh { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-left: 4px; }
+  .sh .st { font-size: 15px; font-weight: 700; color: var(--accent2); }
+  .sh .ss { font-size: 12px; color: var(--text3); }
+
+  .cards { display: flex; flex-direction: column; gap: 8px; }
+
+  .card {
+    display: flex; align-items: flex-start; gap: 12px; background: var(--card);
+    border-radius: 14px; padding: 14px 16px; border: 1px solid var(--border);
+    transition: all 0.15s;
+  }
+  .card.done { background: var(--done-bg); border-color: var(--done-border); }
+
+  .cb {
+    width: 28px; height: 28px; min-width: 28px; border-radius: 8px;
+    border: 2px solid var(--border); background: var(--card); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; margin-top: 1px; padding: 0;
+  }
+  .cb.chk { background: var(--accent); border-color: var(--accent); }
+  .cb svg { display: none; }
+  .cb.chk svg { display: block; }
+
+  .cb-body { flex: 1; min-width: 0; }
+  .cn { font-size: 15px; font-weight: 600; color: var(--text); }
+  .card.done .cn { color: var(--text3); text-decoration: line-through; }
+  .tag {
+    font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 5px;
+    margin-left: 6px; white-space: nowrap; display: inline-block; vertical-align: middle;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .cr { font-size: 13px; color: var(--text2); margin-top: 3px; }
+  .card-actions { display: flex; gap: 8px; margin-top: 8px; align-items: center; flex-wrap: wrap; }
+  .vl {
+    font-size: 12px; color: var(--accent); text-decoration: none; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .vl:active { opacity: 0.6; }
+
+  .timer-btn {
+    font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 8px;
+    border: 1.5px solid var(--accent); background: transparent; color: var(--accent);
+    cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 4px;
+  }
+  .timer-btn:active { opacity: 0.7; }
+
+  .light { text-align: center; padding: 20px; color: var(--text3); font-size: 14px; font-style: italic; }
+
+  /* Timer overlay */
+  .timer-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    z-index: 100; align-items: center; justify-content: center;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  }
+  .timer-overlay.show { display: flex; }
+  .timer-modal {
+    background: var(--card); border-radius: 24px; padding: 32px; text-align: center;
+    width: 300px; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .timer-name { font-size: 16px; font-weight: 700; color: var(--accent2); margin-bottom: 4px; }
+  .timer-reps { font-size: 13px; color: var(--text2); margin-bottom: 20px; }
+  .timer-display {
+    font-size: 64px; font-weight: 200; color: var(--text); font-variant-numeric: tabular-nums;
+    line-height: 1; margin-bottom: 8px; font-family: -apple-system, system-ui, sans-serif;
+  }
+  .timer-sub { font-size: 13px; color: var(--text3); margin-bottom: 24px; }
+  .timer-controls { display: flex; gap: 12px; justify-content: center; }
+  .timer-controls button {
+    width: 56px; height: 56px; border-radius: 50%; border: none; cursor: pointer;
+    font-size: 22px; display: flex; align-items: center; justify-content: center;
+    font-family: inherit; transition: transform 0.1s;
+  }
+  .timer-controls button:active { transform: scale(0.92); }
+  .t-play { background: var(--accent); color: white; }
+  .t-pause { background: #f59e0b; color: white; }
+  .t-reset { background: color-mix(in srgb, var(--text) 10%, transparent); color: var(--text2); }
+  .t-close { background: color-mix(in srgb, var(--text) 10%, transparent); color: var(--text2); }
+  .timer-ring { margin: 0 auto 16px; }
+
+  .timer-done-flash {
+    animation: flashDone 0.5s ease;
+  }
+  @keyframes flashDone {
+    0%, 100% { color: var(--text); }
+    50% { color: var(--accent); }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<div class="timer-overlay" id="timerOverlay">
+  <div class="timer-modal">
+    <div class="timer-name" id="timerName"></div>
+    <div class="timer-reps" id="timerReps"></div>
+    <svg class="timer-ring" width="160" height="160" viewBox="0 0 160 160" id="timerRing">
+      <circle cx="80" cy="80" r="70" fill="none" stroke="var(--border)" stroke-width="6"/>
+      <circle cx="80" cy="80" r="70" fill="none" stroke="var(--accent)" stroke-width="6"
+        stroke-linecap="round" id="timerArc" transform="rotate(-90 80 80)"/>
+    </svg>
+    <div class="timer-display" id="timerDisplay">0:30</div>
+    <div class="timer-sub" id="timerSub">Tap play to start</div>
+    <div class="timer-controls">
+      <button class="t-reset" onclick="resetTimer()" title="Reset">↺</button>
+      <button class="t-play" id="timerPlayBtn" onclick="toggleTimer()">▶</button>
+      <button class="t-close" onclick="closeTimer()">✕</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PLAN={Monday:{morning:[{n:"Weighted butterfly",r:"10 each leg, 12 both",u:"https://www.betterbodyacademy.com/flexiblity-mobility/weighted-butterflyetch",t:"Adductors",c:"pur"},{n:"Kneeling quad stretch + yoga ball raise",r:"8-10 reps",u:"https://www.youtube.com/watch?v=dGQ0zsV4mTc",t:"Quads",c:"blu"},{n:"Side lying core rotation",r:"10 total",u:"https://youtu.be/EHZJns1bXPM",t:"Core",c:"amb"},{n:"Rhomboid stretch",r:"20-40 sec",u:"https://youtu.be/B8v_J5I9K20",t:"Back",c:"tea",tm:40},{n:"Hamstring floss standing",r:"20 each",u:"https://youtu.be/LLd8ojz2-o4",t:"Hamstrings",c:"pnk"},{n:"Hamstring floss lying",r:"20 each",u:"https://youtu.be/1umMhiYpamY",t:"Hamstrings",c:"pnk"}],evening:[{n:"Towel scrunch",r:"5 each foot",u:"https://www.youtube.com/watch?v=XEJYq1HBtHY",t:"Feet",c:"cor"},{n:"Shoulder CARs",r:"8 each direction",u:"https://youtu.be/ghXn2-ZYfU4",t:"Shoulders",c:"blu"},{n:"Pigeon stretch",r:"30 sec - 1 min each",u:"https://youtu.be/op-eDU9eNqM",t:"Glutes",c:"cor",tm:60}]},Tuesday:{morning:[{n:"Upper trap stretch",r:"20-40 sec each",u:"https://youtu.be/-r15VoakKG-E",t:"Traps",c:"tea",tm:40},{n:"Straddle stretch",r:"30 sec - 1 min",u:"https://youtu.be/r15VoakKG-E",t:"Adductors",c:"pur",tm:60},{n:"Quad extension",r:"10-12 reps",u:"https://www.youtube.com/watch?v=1ofnMbEFUoQ",t:"Quads",c:"blu"},{n:"Tibia pulls",r:"10 reps",u:"https://youtu.be/MslHL6pCROA",t:"Shins",c:"grn"},{n:"Hamstring floss standing",r:"20 each",u:"https://youtu.be/LLd8ojz2-o4",t:"Hamstrings",c:"pnk"},{n:"Hamstring floss lying",r:"20 each",u:"https://youtu.be/1umMhiYpamY",t:"Hamstrings",c:"pnk"}],evening:[{n:"Lacrosse ball foot roll",r:"Multi-direction",u:"https://youtube.com/shorts/7e84b0lp8r4",t:"Feet",c:"cor"},{n:"Towel scrunch",r:"5 each foot",u:"https://www.youtube.com/watch?v=XEJYq1HBtHY",t:"Feet",c:"cor"},{n:"Swimmer stretch",r:"8 reps",u:"https://youtu.be/amyCM7-VwXI",t:"Chest",c:"pnk"},{n:"Child's pose to cobra",r:"10 reps",u:"https://www.youtube.com/watch?v=4xPXuE0z19Y",t:"Back",c:"tea"}]},Wednesday:{morning:[{n:"Wrist stretch sit back",r:"10x, 10-15 sec hold",u:"https://youtu.be/QiMiia4F7Xg",t:"Wrists",c:"pur",tm:15},{n:"Hamstring flutter/kick",r:"12 reps",u:"https://youtube.com/shorts/_pW-OKhiCMc",t:"Hamstrings",c:"pnk"},{n:"Side bend",r:"10 reps",u:"https://youtube.com/shorts/0o-NYBKaog0",t:"Core",c:"amb"},{n:"Rhomboid banded stretch",r:"20-40 sec",u:"https://youtube.com/shorts/l28GhMF_a54",t:"Back",c:"tea",tm:40},{n:"Adductor slider",r:"10 each + 10 sec pause",u:"https://youtube.com/shorts/dq0QwzHI7Is",t:"Adductors",c:"pur",tm:10}],evening:[{n:"5-min foot health yoga",r:"Follow video",u:"https://youtu.be/7Dgz4Dm5jlo",t:"Feet",c:"cor",tm:300},{n:"Hamstring wall hold",r:"45 sec - 1 min",u:"https://youtube.com/shorts/8ggkgq220bA",t:"Hamstrings",c:"pnk",tm:60},{n:"Happy baby pose",r:"30 sec - 1 min",u:"https://youtu.be/Ppku7i3ypGM",t:"Hips",c:"cor",tm:60},{n:"Deep squat hold",r:"15-30 sec x2, lean side to side",u:"https://youtube.com/shorts/JVRXzb4qOx0",t:"Hips",c:"cor",tm:30},{n:"Calf raise with hold",r:"15 sec hold",u:"https://www.youtube.com/shorts/RHJIiWflo_s",t:"Calves",c:"tea",tm:15}]},Thursday:{morning:[{n:"Foot mobility video",r:"Follow video",u:"https://www.youtube.com/watch?v=aSJ2AU1_VP4",t:"Feet",c:"cor"},{n:"Weighted butterfly",r:"10 flaps",u:"https://www.betterbodyacademy.com/flexiblity-mobility/weighted-butterfly",t:"Adductors",c:"pur"},{n:"Pec stretch",r:"15-30 sec each",u:"https://youtu.be/tatrv67rou8",t:"Chest",c:"pnk",tm:30},{n:"Swimmers",r:"10 reps",u:"https://youtu.be/OanaBbIZDQI",t:"Shoulders",c:"blu"},{n:"Wrist stretch",r:"10x, 15 sec hold",u:"https://youtube.com/shorts/fCpKoKBR_9g",t:"Wrists",c:"pur",tm:15}],evening:[{n:"Upper trap stretch",r:"10 each side",u:"https://youtube.com/shorts/Yfujb9psUMs",t:"Traps",c:"tea"},{n:"Adductor rock back",r:"10 each side",u:"https://youtu.be/yF8o6I6aSZg",t:"Adductors",c:"pur"},{n:"Child's pose walk over",r:"10 alternating L/R",u:"https://youtu.be/fs5mYLk7ZFI",t:"Back",c:"tea"},{n:"Quad stretch",r:"Hold 20-30 sec each",u:"https://www.youtube.com/shorts/LIozEO44AU8",t:"Quads",c:"blu",tm:30}]},Friday:{morning:[{n:"Weighted straddle stretch",r:"10 reps",u:"https://youtube.com/shorts/UQPeBxOOTaM",t:"Adductors",c:"pur"},{n:"Trap stretch",r:"10 each, 15 sec hold",u:"https://youtube.com/shorts/uNM9bQi2LW4",t:"Traps",c:"tea",tm:15},{n:"Dead bug press",r:"15-30 sec",u:"https://youtu.be/FzJsMijpcxc",t:"Core",c:"amb",tm:30},{n:"Thread the needle",r:"8 each side",u:"https://youtu.be/MfUx9FCOb1E",t:"Thoracic",c:"tea"},{n:"Hamstring floss lying",r:"20 each",u:"https://youtu.be/1umMhiYpamY",t:"Hamstrings",c:"pnk"}],evening:[{n:"Lunge with calf raise",r:"8 each leg",u:"https://youtu.be/jKYxg1tKPRk",t:"Calves",c:"tea"},{n:"Bridge",r:"8-10 reps, 3 sec down",u:"https://youtube.com/shorts/Rq3EXYus03E",t:"Glutes",c:"cor"},{n:"Shoulder CARs",r:"8 each direction",u:"https://youtu.be/ghXn2-ZYfU4",t:"Shoulders",c:"blu"}]},Saturday:{morning:[{n:"Foot mobility video",r:"Follow video",u:"https://youtu.be/ea4MF7IqILA",t:"Feet",c:"cor"},{n:"Chest stretch video",r:"Follow video",u:"https://youtu.be/eo5x2Zw9110",t:"Chest",c:"pnk"}],evening:[]},Sunday:{morning:[{n:"10-min full body stretch",r:"Follow video",u:"https://youtu.be/9xZcnOjLNZ0",t:"Full body",c:"gry",tm:600},{n:"10-min ankle mobility",r:"Follow video",u:"https://www.youtube.com/watch?v=PdocnI5B54I",t:"Ankles",c:"cor",tm:600}],evening:[]}};
+
+const DAYS=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const SHORT=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const COLORS={
+  pur:["#EEEDFE","#534AB7"],tea:["#E1F5EE","#0F6E56"],cor:["#FAECE7","#993C1D"],
+  pnk:["#FBEAF0","#993556"],gry:["#F1EFE8","#5F5E5A"],blu:["#E6F1FB","#185FA5"],
+  grn:["#EAF3DE","#3B6D11"],amb:["#FAEEDA","#854F0B"]
+};
+const todayIdx=(new Date().getDay()+6)%7;
+let selDay=todayIdx;
+let done={};
+
+// Load saved state
+try { const s=localStorage.getItem("stretch-done"); if(s) done=JSON.parse(s); } catch(e){}
+// Clear old days (keep only today)
+const todayKey=new Date().toDateString();
+try {
+  const lastDate=localStorage.getItem("stretch-date");
+  if(lastDate && lastDate!==todayKey){ done={}; localStorage.setItem("stretch-done","{}"); }
+  localStorage.setItem("stretch-date",todayKey);
+} catch(e){}
+
+function save(){ try{localStorage.setItem("stretch-done",JSON.stringify(done));}catch(e){} }
+
+// Timer state
+let timerInterval=null, timerRemaining=0, timerTotal=0, timerRunning=false;
+const circ=2*Math.PI*70;
+
+function openTimer(name,reps,seconds){
+  timerTotal=seconds; timerRemaining=seconds; timerRunning=false;
+  clearInterval(timerInterval);
+  document.getElementById("timerName").textContent=name;
+  document.getElementById("timerReps").textContent=reps;
+  document.getElementById("timerOverlay").classList.add("show");
+  updateTimerDisplay();
+  const btn=document.getElementById("timerPlayBtn");
+  btn.textContent="▶"; btn.className="t-play";
+}
+function updateTimerDisplay(){
+  const m=Math.floor(timerRemaining/60);
+  const s=timerRemaining%60;
+  const display=m>0?(m+":"+(s<10?"0":"")+s):("0:"+( s<10?"0":"")+s);
+  document.getElementById("timerDisplay").textContent=display;
+  const pct=timerTotal>0?timerRemaining/timerTotal:0;
+  document.getElementById("timerArc").setAttribute("stroke-dasharray",(pct*circ)+" "+circ);
+  document.getElementById("timerSub").textContent=timerRunning?"Hold it...":timerRemaining===0?"Done!":"Tap play to start";
+}
+function toggleTimer(){
+  const btn=document.getElementById("timerPlayBtn");
+  if(timerRunning){
+    clearInterval(timerInterval); timerRunning=false;
+    btn.textContent="▶"; btn.className="t-play";
+  } else {
+    if(timerRemaining<=0){ timerRemaining=timerTotal; }
+    timerRunning=true;
+    btn.textContent="❚❚"; btn.className="t-pause";
+    timerInterval=setInterval(()=>{
+      timerRemaining--;
+      if(timerRemaining<=0){
+        timerRemaining=0; clearInterval(timerInterval); timerRunning=false;
+        btn.textContent="▶"; btn.className="t-play";
+        document.getElementById("timerDisplay").classList.add("timer-done-flash");
+        setTimeout(()=>document.getElementById("timerDisplay").classList.remove("timer-done-flash"),600);
+        if(navigator.vibrate) navigator.vibrate([200,100,200]);
+      }
+      updateTimerDisplay();
+    },1000);
+  }
+  updateTimerDisplay();
+}
+function resetTimer(){
+  clearInterval(timerInterval); timerRunning=false; timerRemaining=timerTotal;
+  const btn=document.getElementById("timerPlayBtn");
+  btn.textContent="▶"; btn.className="t-play";
+  updateTimerDisplay();
+}
+function closeTimer(){
+  clearInterval(timerInterval); timerRunning=false;
+  document.getElementById("timerOverlay").classList.remove("show");
+}
+
+function render(){
+  const d=DAYS[selDay], data=PLAN[d];
+  const all=[...data.morning.map((_,i)=>d+"-m-"+i),...data.evening.map((_,i)=>d+"-e-"+i)];
+  const total=all.length, doneN=all.filter(k=>done[k]).length;
+  const pct=total?Math.round(doneN/total*100):0;
+  const rc=2*Math.PI*36, dash=(pct/100)*rc;
+
+  let h=`<div class="hdr"><small>Coach B</small><h1>Stretch Plan</h1></div>`;
+  h+=`<div class="days">`;
+  SHORT.forEach((s,i)=>{
+    h+=`<button class="${i===selDay?"sel":""}" onclick="pickDay(${i})">${s}${i===todayIdx?'<div class="dot"></div>':""}</button>`;
+  });
+  h+=`</div>`;
+
+  h+=`<div class="prog"><svg width="76" height="76" viewBox="0 0 80 80"><circle cx="40" cy="40" r="36" fill="none" stroke="var(--border)" stroke-width="5"/><circle cx="40" cy="40" r="36" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${dash} ${rc}" transform="rotate(-90 40 40)" style="transition:stroke-dasharray 0.3s"/><text x="40" y="44" text-anchor="middle" font-size="17" font-weight="700" fill="var(--text)">${pct}%</text></svg>`;
+  h+=`<div><div class="dn">${d}</div><div class="ct">${doneN} of ${total} stretches</div>`;
+  if(pct===100) h+=`<div class="ok">All done! Great work 💪</div>`;
+  h+=`</div></div>`;
+
+  if(data.morning.length){
+    h+=`<div class="sess"><div class="sh"><span style="font-size:20px">☀️</span><div><div class="st">Morning</div><div class="ss">When you wake up</div></div></div><div class="cards">`;
+    data.morning.forEach((s,i)=>{ h+=card(s,d+"-m-"+i); });
+    h+=`</div></div>`;
+  }
+  if(data.evening.length){
+    h+=`<div class="sess"><div class="sh"><span style="font-size:20px">🌙</span><div><div class="st">Before bed</div><div class="ss">Wind down</div></div></div><div class="cards">`;
+    data.evening.forEach((s,i)=>{ h+=card(s,d+"-e-"+i); });
+    h+=`</div></div>`;
+  }
+  if(total<=4) h+=`<div class="light">Light day — enjoy the recovery!</div>`;
+  document.getElementById("app").innerHTML=h;
+}
+
+function card(s,k){
+  const isDone=!!done[k], cl=COLORS[s.c]||COLORS.gry;
+  const cls=isDone?"card done":"card";
+  const cbCls=isDone?"cb chk":"cb";
+  let actions=`<a class="vl" href="${s.u}" target="_blank" rel="noopener noreferrer">▶ Watch demo</a>`;
+  if(s.tm){
+    const label=s.tm>=60?(s.tm>=120?Math.round(s.tm/60)+" min":s.tm>=60&&s.tm<120?"1 min":s.tm+" sec"):s.tm+" sec";
+    actions+=` <button class="timer-btn" onclick="event.stopPropagation();openTimer('${s.n.replace(/'/g,"\\'")}','${s.r.replace(/'/g,"\\'")}',${s.tm})">⏱ ${label}</button>`;
+  }
+  return `<div class="${cls}"><button class="${cbCls}" onclick="tog('${k}')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7.5L5.5 10L11 4" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="cb-body"><div><span class="cn">${s.n}</span><span class="tag" style="background:${cl[0]};color:${cl[1]}">${s.t}</span></div><div class="cr">${s.r}</div><div class="card-actions">${actions}</div></div></div>`;
+}
+
+window.pickDay=function(i){ selDay=i; render(); };
+window.tog=function(k){ done[k]=!done[k]; save(); render(); };
+render();
+</script>
+</body>
+</html>
